@@ -16,15 +16,16 @@ router.post('/person',async(req,res)=>{
     }
 })
 
-router.get('/person',async(req,res)=>{
+router.get('/person/:work',async(req,res)=>{
     try{
-        const data=await Person.find();
+        const db_quary=req.params.work
+        const data = await person.find({ work: db_quary }); 
         console.log('data fetch');
         res.status(200).json(data);
     }
     catch(err){
         console.log(err);
-        res.status(500).json({error:'not found'});
+        res.status(500).json({error:err});
     }
 })
 

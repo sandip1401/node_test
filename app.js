@@ -1,18 +1,31 @@
-const app = require("express")();
+const express = require("express");
+const app = express();
 const http = require("http").Server(app);
 require("dotenv").config();
-console.log("here is mongo", process.env.MONGODB_URL);
 const mongoose = require("mongoose");
-mongoose.connect(process.env.MONGODB_URL);
-const Person = require("./models/userModel");
 
-const bodyParser = require("body-parser"); // Correct case
-app.use(bodyParser.json()); // Use the JSON parser middleware
+// Database Connection
 
-const PORT = process.env.PORT || 8000;
-http.listen(PORT, () => {
-  console.log(`server is running on ${PORT}`);
-});
+mongoose.connect('mongodb+srv://sandipgpay224:Sandip&14@cluster0.kvho0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch(err => console.error("MongoDB connection error:", err));
 
+// Middleware
+app.use(express.json()); // Built-in body-parser middleware
+
+// Routes
 const personroutes = require("./routes/personroutes");
 app.use("/", personroutes);
+
+// Start Server
+const PORT = 3000;
+http.listen(PORT, () => {
+  console.log(`Server is running on ${PORT}`)
+});
+
+
+// Error Handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something went wrong!");
+});
